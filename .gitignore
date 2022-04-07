@@ -1,0 +1,16 @@
+.DS_Store
+/node_modules/
+/lib/
+.bsb.lock
+.merlin
+*.log
+*~
+.idea/
+.vscode/
+coverage/
+dist/
+build/
+package-lock.json
+types/
+*.gen.tsx
+*.bs.js
