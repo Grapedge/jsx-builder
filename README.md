@@ -15,3 +15,5 @@ Try writing in `rescript`, it might be a challenge.
 - [ ] The user transforms the code by `commands` (the bottom uses babel)
 
 Hope to be at least 60% done this weekend.
+
+TODO, or not: perfect babel modeling. This seems like a lot of work, for the time being I'll use `'a`, or even `%raw`
