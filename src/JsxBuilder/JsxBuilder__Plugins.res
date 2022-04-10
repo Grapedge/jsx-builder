@@ -59,6 +59,13 @@ let wrapJsxUnitElement = Plugin.make((api, _) => {
           }
         },
       },
+      "JSXFragment": {
+        "exit": path => {
+          if !(path->Path.parent->isJsxUnitElement) {
+            path->replaceWrapper
+          }
+        },
+      },
     },
   }
 })

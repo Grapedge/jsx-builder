@@ -37,6 +37,7 @@ const App = () => {
       <span>
         Hello, Text and {expression}.
       </span>
+      <></>
     </div>
   )
 }
