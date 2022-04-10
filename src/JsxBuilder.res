@@ -17,12 +17,54 @@ module Renderer: {
   let render: string => t
 } = {
   type t = (string, string)
+
+  // 为节点包裹 JsxUnitElement
+  // let wrapElement =
   let render = (code: string): t => {
     ("", code)
   }
 }
 
-// 命令模块，给定命令，对 AST 进行变换
-module Commands = {
+let testCode = "import React from 'react'
 
+const App = () => {
+  let expression = 1 + 1
+  return (
+    <div>
+      <span>
+        Hello! Text!
+      </span>
+      <span>
+        Hello, Text and {expression}.
+      </span>
+    </div>
+  )
 }
+"
+
+// 将代码解析为 AST
+let parse = (code: string) => {
+  open Babel
+  let {make: makeO, builtPlugin: bp} = module(Babel.TransformOptions)
+  let {ast} = transformWith(code, makeO(~ast=true, ~code=false, ~plugins=[bp(#"syntax-jsx")], ()))
+  Js.Null.toOption(ast)
+}
+
+let render = (code: string) => {
+  open Babel
+  let {make: makeO, builtPlugin: bp, pluginFn: pf} = module(Babel.TransformOptions)
+  let {wrapJsxUnitElement} = module(JsxBuilder__Plugins)
+  let {code} = transformWith(
+    code,
+    makeO(~ast=false, ~code=true, ~plugins=[bp(#"syntax-jsx"), pf(wrapJsxUnitElement)], ()),
+  )
+  Js.Null.toOption(code)
+}
+
+let build = (code: string) => {
+  (parse(code), render(code))
+}
+
+// ====== TEST ======
+let (_, res) = build(testCode)
+Js.log(res)
