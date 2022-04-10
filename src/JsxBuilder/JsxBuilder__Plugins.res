@@ -69,3 +69,30 @@ let wrapJsxUnitElement = Plugin.make((api, _) => {
     },
   }
 })
+
+@ocaml.doc("Babel 插件：将所有导入替换为从 SCOPE 变量中读取")
+let importFromSCOPE = Plugin.make((api, _) => {
+  api->Api.assertVersion(#Major(7))
+  let template = api->Api.templateAst
+  let makeRead = name => template(`var ${name} = SCOPE["${name}"]`, {plugins: []})
+  let vars = []
+  let pushRead = path => {
+    let _ = Js.Array2.push(vars, (path->Path.node)["local"]["name"]->makeRead)
+    ()
+  }
+  {
+    "visitor": {
+      "ImportDefaultSpecifier": pushRead,
+      "ImportSpecifier": pushRead,
+      "ImportDeclaration": {
+        "exit": Path.remove,
+      },
+      "Program": {
+        "exit": path => {
+          %raw("path.node.body.unshift(...vars)")
+          ()
+        }
+      }
+    },
+  }
+})

@@ -179,4 +179,5 @@ module Path = {
   @get external node: t => 'node = "node"
   @send external replaceWith: (t, 'node) => unit = "replaceWith"
   @get external parent: t => 'node = "parent"
+  @send external remove: t => unit = "remove"
 }

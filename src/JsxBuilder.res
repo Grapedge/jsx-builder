@@ -26,6 +26,7 @@ module Renderer: {
 }
 
 let testCode = "import React from 'react'
+import { Table as AntdTable } from 'antd'
 
 const App = () => {
   let expression = 1 + 1
@@ -54,10 +55,15 @@ let parse = (code: string) => {
 let render = (code: string) => {
   open Babel
   let {make: makeO, builtPlugin: bp, pluginFn: pf} = module(Babel.TransformOptions)
-  let {wrapJsxUnitElement} = module(JsxBuilder__Plugins)
+  let {wrapJsxUnitElement, importFromSCOPE} = module(JsxBuilder__Plugins)
   let {code} = transformWith(
     code,
-    makeO(~ast=false, ~code=true, ~plugins=[bp(#"syntax-jsx"), pf(wrapJsxUnitElement)], ()),
+    makeO(
+      ~ast=false,
+      ~code=true,
+      ~plugins=[bp(#"syntax-jsx"), pf(wrapJsxUnitElement), pf(importFromSCOPE)],
+      (),
+    ),
   )
   Js.Null.toOption(code)
 }
